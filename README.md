@@ -6,4 +6,4 @@ Below is a brief demostration of a robot arm identifying and tracking position o
 https://github.com/EveVengerov/Object-Palletization/assets/70894557/9046c3b3-977b-471d-8c62-8224a8a122eb
 
 
-This is a simple demostraton, next we will identify multiple objects as targets and chooing one which is the closest to the current robot position and picking each of the objects one by one till all are placed inside the placement cell.
+This is a simple demostraton, next we will identify multiple objects as targets and choosing one which is the closest to the current robot position and picking each of the objects one by one until all are placed inside the placement cell.
