@@ -7,7 +7,7 @@ import math
 
 import ipywidgets as widgets
 
-my_chain = ikpy.chain.Chain.from_urdf_file("../Resources/arm.urdf", active_links_mask=[False, True, True, True, True, True])
+my_chain = ikpy.chain.Chain.from_urdf_file("Resources/arm.urdf", active_links_mask=[False, True, True, True, True, True])
 
 # target_position = [ 0.0, 0.0,0.5]
 # station1
