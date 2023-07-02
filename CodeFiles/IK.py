@@ -5,9 +5,9 @@ import numpy as np
 import time
 import math
 
-import ipywidgets as widgets
+# import ipywidgets as widgets
 
-my_chain = ikpy.chain.Chain.from_urdf_file("Resources/arm.urdf", active_links_mask=[False, True, True, True, True, True])
+my_chain = ikpy.chain.Chain.from_urdf_file("../Resources/arm.urdf", active_links_mask=[False, True, True, True, True, True])
 
 # target_position = [ 0.0, 0.0,0.5]
 # station1
@@ -28,9 +28,9 @@ def doIK(target_position):
     # old_position = ik.copy()
     target_orientation = [0.1, 0.1, -1]
     ik = my_chain.inverse_kinematics(target_position, target_orientation, orientation_mode="Y")
-    print("The angles of each joints are : ", list(map(lambda r: math.degrees(r), ik.tolist())))
+    # print("The angles of each joints are : ", list(map(lambda r: math.degrees(r), ik.tolist())))
     computed_position = my_chain.forward_kinematics(ik)
-    print("Computed position: %s, original position : %s" % (computed_position[:3, 3], target_position))
+    # print("Computed position: %s, original position : %s" % (computed_position[:3, 3], target_position))
     print("Computed position (readable) : %s" % ['%.2f' % elem for elem in computed_position[:3, 3]])
 
     return ik

@@ -68,9 +68,11 @@ def platform(img):
     #  To check if WarpPnts fetched is a list type or not , if bool is returned, no points are detected
     if not isinstance(WarpPnts, bool):
         print("Platform Detected")
+    else:
+        print("Platform not Detected")
+        return -1
 
-    # # Crop and resize the platform to a 500x500 pixels square image
-
+    # Crop and resize the platform to a 500x500 pixels square image
     CropSize = [500,500]
     croppedImage = utils.warpPerspective(img, WarpPnts, CropSize)
     croppedImageContour = croppedImage.copy()
@@ -81,12 +83,15 @@ def platform(img):
     Ppnts = getRectangle(croppedImageCanny, croppedImageContour, [50000,10000])
     if not isinstance(Ppnts, bool):
         print("Placement Station Detected")
+    else:
+        print("Placement Station not Detected")
+        return -1
 
     print("Correcting Orientation... ")
     croppedImage = utils.correctOrientation(croppedImage, Ppnts)
-    croppedImageCanny = utils.correctOrientation(croppedImageCanny, Ppnts)
-    croppedImageContour = utils.correctOrientation(croppedImageContour, Ppnts)
-
+    # croppedImageCanny = utils.correctOrientation(croppedImageCanny, Ppnts)
+    # croppedImageContour = utils.correctOrientation(croppedImageContour, Ppnts)
+    print("Corrected ")
 
     # Estimating meter to pixel ratio
     sumP = utils.dist(Ppnts[0], Ppnts[1]) + utils.dist(Ppnts[1], Ppnts[2]) + utils.dist(Ppnts[2], Ppnts[3]) + utils.dist(Ppnts[3], Ppnts[0])
@@ -101,9 +106,10 @@ def platform(img):
     return croppedImage, Scale
 
 if __name__ == '__main__':
-    img = cv2.imread("Resources/PlatformImg12.jpg")
-    platform(img)
-
+    img = cv2.imread("../Resources/PlatformImg10.jpg")
+    croppedImage, scale = platform(img)
+    cv2.imshow("Processed Image", croppedImage)
+    cv2.waitKey(0)
 
 
 # # For Video Streaming

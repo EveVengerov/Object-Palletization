@@ -89,15 +89,18 @@ def detectCubes(img, Scale):
 
 
 
-    # Show Processed Image
-    mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-    stackImage = utils.stackImages([[img, mask, imgContours]],0.7)
-    cv2.imshow('Stacked Images', stackImage)
-    cv2.waitKey(0)
+    # # Show Processed Image
+    # mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    # stackImage = utils.stackImages([[img, mask, imgContours]],0.7)
+    # cv2.imshow('Stacked Images', stackImage)
+    # cv2.waitKey(0)
 
     return TargetPosition
 
 if __name__ == '__main__':
-    img = cv2.imread("Resources/PlatformImg9.jpg")
-    croppedImage, Scale = Pd.platform(img)
-    detectCubes(croppedImage, Scale)
+    img = cv2.imread("../Resources/PlatformImg10.jpg")
+    if Pd.platform(img) != -1:
+        croppedImage, Scale = Pd.platform(img)
+        detectCubes(croppedImage, Scale)
+    else:
+        print("Make sure the platform is clearly visible to the camera")
