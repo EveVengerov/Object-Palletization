@@ -57,16 +57,20 @@ def platform(img):
     img = cv2.resize(img, (640, 480))
     imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     imgBlur = cv2.GaussianBlur(imgGray,(5,5), 2)
+    # ret, thresh = cv2.threshold(imgBlur, 120, 255, 0)
+    # thresh = cv2.bitwise_not(thresh)
     imgCanny = cv2.Canny(imgBlur,100,100)
     imgDilation = cv2.dilate(imgCanny, kernel, iterations = 1)
     imgCanny= cv2.erode(imgDilation, kernel, iterations=1)
 
     # For showing Contour over the image
     imgContour = img.copy()
-
+    cv2.imshow("Image contours", imgCanny)
+    cv2.waitKey(0)
     WarpPnts = getRectangle(imgCanny, imgContour, [200000, 100000])
+    # print(type(WarpPnts))
     #  To check if WarpPnts fetched is a list type or not , if bool is returned, no points are detected
-    if not isinstance(WarpPnts, bool):
+    if isinstance(WarpPnts, np.ndarray ):
         print("Platform Detected")
     else:
         print("Platform not Detected")
@@ -99,17 +103,18 @@ def platform(img):
 
     Scale = 0.09/avgP #in m/pixel
 
-    # # Show all images
-    # stackImage = utils.stackImages([[img, imgBlur],[imgCanny, imgContour]],0.7)
-    # cv2.imshow("Image Proccessing", stackImage)
-    # cv2.waitKey(0)
+    # Show all images
+    stackImage = utils.stackImages([[img, imgBlur],[imgCanny, imgContour]],0.7)
+    cv2.imshow("Image Proccessing", stackImage)
+    cv2.waitKey(0)
     return croppedImage, Scale
 
 if __name__ == '__main__':
-    img = cv2.imread("../Resources/PlatformImg10.jpg")
-    croppedImage, scale = platform(img)
-    cv2.imshow("Processed Image", croppedImage)
-    cv2.waitKey(0)
+    img = cv2.imread("../Resources/PlatformImg15.jpg")
+    if platform(img) != -1:
+            croppedImage, scale = platform(img)
+            cv2.imshow("Processed Image", croppedImage)
+            cv2.waitKey(0)
 
 
 # # For Video Streaming

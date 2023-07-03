@@ -39,8 +39,8 @@ def getContour(img, imgContour, rangeArea=[50000,1000]):
 
 def detectCubes(img, Scale):
     img = cv2.resize(img, (640, 480))
+    img = cv2.GaussianBlur(img, (5, 5), 2)
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
 
     # img = Pd.croppedImage
 
@@ -69,6 +69,11 @@ def detectCubes(img, Scale):
     # ret, thresh = cv2.threshold(resultGray, 100, 255, 0)
     # ret,thresh = cv2.threshold(resultGray, 145,255,0) #For only pink detection
     C = getContour(mask, imgContours)
+    if not isinstance(C, bool ):
+        print("Objects Detected")
+    else:
+        print("Objects not Detected")
+        return -1
     # cv2.imshow("Binary", thresh)
     # cv2.waitKey(0)
 
@@ -89,18 +94,33 @@ def detectCubes(img, Scale):
 
 
 
-    # # Show Processed Image
-    # mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-    # stackImage = utils.stackImages([[img, mask, imgContours]],0.7)
-    # cv2.imshow('Stacked Images', stackImage)
-    # cv2.waitKey(0)
+    # Show Processed Image
+    mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    stackImage = utils.stackImages([[img, mask, imgContours]],0.7)
+    cv2.imshow('Stacked Images', stackImage)
+    cv2.waitKey(0)
 
     return TargetPosition
 
-if __name__ == '__main__':
-    img = cv2.imread("../Resources/PlatformImg10.jpg")
+def detectAndTrack(img):
     if Pd.platform(img) != -1:
         croppedImage, Scale = Pd.platform(img)
-        detectCubes(croppedImage, Scale)
+        if detectCubes(croppedImage, Scale) != -1:
+            cv2.destroyAllWindows()
+            print("Window closed")
+        else:print("Make sure the platform is clearly visible to the camera")
+    else:
+        print("Make sure the platform is clearly visible to the camera")
+        return -1
+
+
+if __name__ == '__main__':
+    img = cv2.imread("../Resources/PlatformImg16.jpg")
+    if Pd.platform(img) != -1:
+        croppedImage, Scale = Pd.platform(img)
+        if detectCubes(croppedImage, Scale) != -1:
+            cv2.destroyAllWindows()
+            print("Window closed")
+        else:print("Make sure the platform is clearly visible to the camera")
     else:
         print("Make sure the platform is clearly visible to the camera")

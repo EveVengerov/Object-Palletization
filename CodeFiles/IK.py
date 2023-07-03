@@ -24,9 +24,9 @@ my_chain = ikpy.chain.Chain.from_urdf_file("../Resources/arm.urdf", active_links
 
 
 
-def doIK(target_position):
+def doIK(target_position,target_orientation = [0.1, 0.1, -1]):
     # old_position = ik.copy()
-    target_orientation = [0.1, 0.1, -1]
+    # target_orientation = [0.1, 0.1, -1]
     ik = my_chain.inverse_kinematics(target_position, target_orientation, orientation_mode="Y")
     # print("The angles of each joints are : ", list(map(lambda r: math.degrees(r), ik.tolist())))
     computed_position = my_chain.forward_kinematics(ik)
@@ -37,8 +37,10 @@ def doIK(target_position):
 
 
 if __name__ == '__main__':
-    target_position = [0.05, 0.130, 0.02 + 0.2 + 0.05]
-    target_orientation = [0.1, 0.1, -1]
+    pivot_position = [0, 0.13, 0.02 + 0.2 + 0.05]
+    target_position = [0.08, 0.08, 0.02 + 0.13 + 0.05]
+    # target_position = pivot_position
+    target_orientation = [0.1, 0.1, -0.5]
     doIK(target_position)
 
     # %matplotlib widget
@@ -48,7 +50,11 @@ if __name__ == '__main__':
     fig, ax = plot_utils.init_3d_figure()
     fig.set_figheight(9)
     fig.set_figwidth(13)
+
+    station_position= [0.04,0.18, 0.02 + 0.13 + 0.05]
     my_chain.plot(ik, ax, target=target_position)
+    my_chain.plot(ik, ax, target=pivot_position )
+    my_chain.plot(ik, ax, target=station_position)
     plt.xlim(-0.5, 0.5)
     plt.ylim(-0.5, 0.5)
     ax.set_zlim(0, 0.6)
