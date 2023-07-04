@@ -95,14 +95,14 @@ def correctOrientation(img, pnts):
     min = np.argmin(diff)
     if min == 0:
         corrImg = cv2.rotate(img, cv2.ROTATE_180)
-        print("rotated 180")
+        # print("rotated 180")
     elif min == 1:
         corrImg = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
-        print("rotated 90 clock")
+        # print("rotated 90 clock")
     elif min == 3:
         corrImg = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-        print("rotated 90 counterclock")
-    else: print("no rotation")
+        # print("rotated 90 counterclock")
+    # else: print("no rotation")
     return corrImg
 
 # To transform coordinates from frame of image to frame of robot, pntS should be in metres

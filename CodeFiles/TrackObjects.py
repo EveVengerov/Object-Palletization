@@ -37,7 +37,7 @@ def getContour(img, imgContour, rangeArea=[50000,1000]):
     # print(C[1])
     return C
 
-def detectCubes(img, Scale):
+def detectCubes(img, Scale, showImage=False):
     img = cv2.resize(img, (640, 480))
     img = cv2.GaussianBlur(img, (5, 5), 2)
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -65,23 +65,21 @@ def detectCubes(img, Scale):
 
     mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
     resultGray = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
+
     # For erd and pink detection
     # ret, thresh = cv2.threshold(resultGray, 100, 255, 0)
     # ret,thresh = cv2.threshold(resultGray, 145,255,0) #For only pink detection
-    C = getContour(mask, imgContours)
-    if not isinstance(C, bool ):
-        print("Objects Detected")
-    else:
-        print("Objects not Detected")
-        return -1
-    # cv2.imshow("Binary", thresh)
-    # cv2.waitKey(0)
 
+    C = getContour(mask, imgContours)
+    if not isinstance(C, bool):
+        print("Objects Not Detected")
+    else :
+        print("Object Detected")
+        return -1
     i = 0
     TargetPosition = []
     for c in C:
-        # print(c)
-        cinm = np.float32([0,0,0])
+        cinm = np.float32([0, 0, 0])
         cinm[0] = c[0] * Scale
         cinm[1] = c[1] * Scale
         cinm[2] = 0
@@ -93,34 +91,43 @@ def detectCubes(img, Scale):
 
 
 
-
-    # Show Processed Image
-    mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
-    stackImage = utils.stackImages([[img, mask, imgContours]],0.7)
-    cv2.imshow('Stacked Images', stackImage)
-    cv2.waitKey(0)
+    if showImage == True :
+        # Show Processed Image
+        mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+        stackImage = utils.stackImages([[img, mask, imgContours]],0.7)
+        cv2.imshow('Stacked Images', stackImage)
+        cv2.waitKey(0)
 
     return TargetPosition
 
-def detectAndTrack(img):
-    if Pd.platform(img) != -1:
-        croppedImage, Scale = Pd.platform(img)
-        if detectCubes(croppedImage, Scale) != -1:
-            cv2.destroyAllWindows()
-            print("Window closed")
-        else:print("Make sure the platform is clearly visible to the camera")
+def detectAndTrack(img, showImage = True):
+    croppedImageScale = Pd.platform(img, showImage)
+    if croppedImageScale != -1:
+        croppedImage, Scale = croppedImageScale[0], croppedImageScale[1]
+        TargetPositions = detectCubes(croppedImage, Scale, showImage)
+        if TargetPositions != -1:
+            return TargetPositions
+        else: print("Make sure the objects are clearly visible to the camera")
     else:
         print("Make sure the platform is clearly visible to the camera")
         return -1
 
 
 if __name__ == '__main__':
-    img = cv2.imread("../Resources/PlatformImg16.jpg")
-    if Pd.platform(img) != -1:
-        croppedImage, Scale = Pd.platform(img)
-        if detectCubes(croppedImage, Scale) != -1:
-            cv2.destroyAllWindows()
-            print("Window closed")
-        else:print("Make sure the platform is clearly visible to the camera")
-    else:
-        print("Make sure the platform is clearly visible to the camera")
+    img = cv2.imread("../Resources/PlatformImg8.jpg")
+    detectAndTrack(img)
+
+    # # For Video Streaming
+    # url = "http://192.168.29.60:8080/video"
+    # vid = cv2.VideoCapture(url)
+    # while(True):
+    #     camera, img = vid.read()
+    #     if img is not None:
+    #         print("Detecting...")
+    #         if detectAndTrack(img) == -1:
+    #           continue
+    #         else:break
+    #     else: break
+    #     q = cv2.waitKey(1)
+    #     if q == ord("q"):
+    #         break

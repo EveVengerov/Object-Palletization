@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from CodeFiles import DriveRobot as dr, IK, PlatformDetection as pd
+import DriveRobot as dr, IK, PlatformDetection as pd
 import TrackObjects as gt
 
 z_offset = 0.13
@@ -8,22 +8,19 @@ z_offset = 0.13
 pivot_position = [0, 0.4, 0.02 + 0.3 + 0.05]
 pivot_orientation = [0.1, 0.5, -0.1]
 station_position = np.array([0.06,  0.15,  0.02+ z_offset ])
-station_position1 = np.array([0.06,  0.150,  0.02+ z_offset +0.05])
-station_position2 = np.array([0.08,  0.150,  0.02+ z_offset +0.10])
+station_position1 = np.array([0.06,  0.15,  0.02+ z_offset +0.05])
+station_position2 = np.array([0.08,  0.15,  0.02+ z_offset +0.15])
 
-# station_config = [[68, 89, 160, 93, 0, 110],
-#                   [68, 85, 140, 93, 0, 110],
-#                   [68, 80, 130, 93, 0, 110]]
 
 home_config = [90, 110, 80, 90, 90, 40]
 
 # For static Image
-img = cv2.imread("../Resources/PlatformImg16.jpg")
+img = cv2.imread("../Resources/PlatformImg17.jpg")
 gt.detectAndTrack(img)
+#
 
-
-# # For Video Streaming
-# url = "http://192.168.29.59:8080/video"
+# For Video Streaming
+# url = "http://192.168.29.60:8080/video"
 # vid = cv2.VideoCapture(url)
 # while(True):
 #     camera, img = vid.read()
@@ -38,12 +35,9 @@ gt.detectAndTrack(img)
 #         break
 
 
-# Get distortionless platform image
-croppedImage, Scale = pd.platform(img)
-
 # target_positions = np.empty(0,3)
 # detect coordinates of the cubes to be picked
-target_positions = np.array(gt.detectCubes(croppedImage, Scale))
+target_positions = np.array(gt.detectAndTrack(img, showImage= False))
 size = target_positions.shape
 if size[0] > 3:
   print("Too many Targets, maximum limit is 3")
